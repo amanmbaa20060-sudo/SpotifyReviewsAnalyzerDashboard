@@ -11,8 +11,30 @@ function sinceParam() {
 
 async function fetchJson(path) {
   const res = await fetch(`${API}${path}`);
-  if (!res.ok) throw new Error(await res.text());
+  if (!res.ok) {
+    const text = await res.text();
+    let message = text;
+    try {
+      const json = JSON.parse(text);
+      message = json.error || json.detail || json.hint || text;
+    } catch {
+      // keep raw text
+    }
+    throw new Error(message);
+  }
+  hideApiError();
   return res.json();
+}
+
+function showApiError(message) {
+  const el = qs("api-error-banner");
+  if (!el) return;
+  el.innerHTML = message;
+  el.classList.remove("hidden");
+}
+
+function hideApiError() {
+  qs("api-error-banner")?.classList.add("hidden");
 }
 
 function stars(n) {
@@ -427,4 +449,14 @@ setupExports();
 setupAgent();
 setupFilters();
 setupSettings();
-refreshAll().catch((e) => console.error(e));
+refreshAll().catch((e) => {
+  console.error(e);
+  showApiError(
+    `<strong>Could not load data from the API.</strong><br>` +
+    `API base: <code>${API}</code><br>` +
+    `${e.message}<br><br>` +
+    `On Vercel: set <code>API_BASE_URL</code> to your Render URL ` +
+    `(e.g. <code>https://your-app.onrender.com</code>), then redeploy. ` +
+    `Check <code>/api/health-proxy</code> on your Vercel domain.`
+  );
+});

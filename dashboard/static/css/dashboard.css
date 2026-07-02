@@ -235,6 +235,23 @@ body {
 }
 .hidden { display: none !important; }
 
+.api-error-banner {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.api-error-banner code {
+  background: rgba(0, 0, 0, 0.06);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+
 .drawer {
   position: fixed; inset: 0; background: rgba(0,0,0,0.35);
   display: grid; justify-content: end; z-index: 100;
