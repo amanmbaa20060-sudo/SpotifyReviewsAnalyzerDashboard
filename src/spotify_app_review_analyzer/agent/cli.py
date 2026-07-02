@@ -40,7 +40,10 @@ def build_parser() -> argparse.ArgumentParser:
     golden.add_argument("--runs", type=int, default=1, help="Runs per question (eval uses 3)")
     golden.add_argument("--no-groq", action="store_true", help="Briefing-only dry run")
 
-    summarize = sub.add_parser("summarize", help="Summarize a research question via RQ briefing + Groq")
+    summarize = sub.add_parser(
+        "summarize",
+        help="Summarize a research question via RQ briefing + Groq",
+    )
     summarize.add_argument("rq_id", choices=list(RQ_IDS))
 
     return parser

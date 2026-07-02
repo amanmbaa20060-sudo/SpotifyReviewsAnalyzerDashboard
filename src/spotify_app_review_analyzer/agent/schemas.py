@@ -89,7 +89,9 @@ def briefing_to_context_text(briefing: RQBriefing, *, rq_id: str | None = None) 
     return json.dumps(payload, indent=2)
 
 
-def collect_allowed_review_ids(briefing: RQBriefing, tool_results: list[dict[str, Any]]) -> set[str]:
+def collect_allowed_review_ids(
+    briefing: RQBriefing, tool_results: list[dict[str, Any]]
+) -> set[str]:
     allowed: set[str] = set()
     for section in briefing.sections:
         for citation in section.exemplar_citations:

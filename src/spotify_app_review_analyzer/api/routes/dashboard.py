@@ -5,22 +5,22 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from spotify_app_review_analyzer.agent.service import AgentService
+from spotify_app_review_analyzer.analytics.schemas import RQ_IDS
+from spotify_app_review_analyzer.api.deps import get_db
 from spotify_app_review_analyzer.api.services.dashboard_data import (
     get_overview_kpis,
     get_rating_distribution,
+    get_recent_feedback,
     get_research_question,
     get_research_questions,
+    get_reviews,
     get_rq_negative_evidence,
     get_rq_problem_analysis,
-    get_recent_feedback,
-    get_reviews,
     get_sentiment_by_source,
     get_top_themes,
     get_unmet_needs,
     get_word_cloud_data,
 )
-from spotify_app_review_analyzer.api.deps import get_db
-from spotify_app_review_analyzer.analytics.schemas import RQ_IDS
 
 router = APIRouter(prefix="/api", tags=["dashboard"])
 

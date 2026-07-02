@@ -7,7 +7,7 @@ from datetime import UTC, date, datetime, timedelta
 from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 
-from spotify_app_review_analyzer.db.models import AnalysisResult, Review, Source
+from spotify_app_review_analyzer.db.models import Review, Source
 
 SOCIAL_SOURCE_KEYS = frozenset({"mastodon", "bluesky", "reddit", "twitter", "tiktok"})
 

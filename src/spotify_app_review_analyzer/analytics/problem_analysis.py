@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections import Counter, defaultdict
+from collections import Counter
 from typing import Any
 
 from spotify_app_review_analyzer.analytics.aggregations import (
@@ -18,7 +18,9 @@ def _theme_meta(taxonomy: Taxonomy) -> dict[str, dict[str, str]]:
     }
 
 
-def _reviews_for_theme(reviews: list[AnalyzedReview], rq_id: str, theme_id: str) -> list[AnalyzedReview]:
+def _reviews_for_theme(
+    reviews: list[AnalyzedReview], rq_id: str, theme_id: str
+) -> list[AnalyzedReview]:
     return [review for review in reviews if theme_id in themes_for_rq(review, rq_id)]
 
 

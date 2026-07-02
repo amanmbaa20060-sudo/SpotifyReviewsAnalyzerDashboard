@@ -8,10 +8,10 @@ from fastapi import APIRouter, Depends, Query
 from fastapi.responses import PlainTextResponse, StreamingResponse
 from sqlalchemy.orm import Session
 
-from spotify_app_review_analyzer.analytics.export import export_briefing_markdown
 from spotify_app_review_analyzer.analytics.briefing import build_rq_briefing
-from spotify_app_review_analyzer.api.services.dashboard_data import get_reviews
+from spotify_app_review_analyzer.analytics.export import export_briefing_markdown
 from spotify_app_review_analyzer.api.deps import get_db
+from spotify_app_review_analyzer.api.services.dashboard_data import get_reviews
 
 router = APIRouter(prefix="/api/export", tags=["export"])
 
@@ -70,6 +70,7 @@ def export_csv(
 def export_markdown(session: Session = Depends(get_db)) -> PlainTextResponse:
     briefing = build_rq_briefing(session)
     from pathlib import Path
+
     from spotify_app_review_analyzer.core.settings import settings
 
     path = Path(settings.validation_export_dir) / "rq_briefing_export.md"

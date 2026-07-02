@@ -7,7 +7,7 @@ from datetime import UTC, datetime, timedelta
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, joinedload
 
-from spotify_app_review_analyzer.db.models import AnalysisResult, Review, Source
+from spotify_app_review_analyzer.db.models import Review
 from spotify_app_review_analyzer.taxonomy.loader import Taxonomy, load_taxonomy
 
 

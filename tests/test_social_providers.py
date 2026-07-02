@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from spotify_app_review_analyzer.ingestion.social_filter import is_spotify_relevant
 from spotify_app_review_analyzer.ingestion.sources.bluesky import BlueskyProvider
 from spotify_app_review_analyzer.ingestion.sources.mastodon import MastodonProvider
-from spotify_app_review_analyzer.ingestion.social_filter import is_spotify_relevant
 
 MASTODON_TIMELINE_SAMPLE = [
     {

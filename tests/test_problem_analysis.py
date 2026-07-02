@@ -17,7 +17,10 @@ def _section() -> RQSection:
         sentiment_mix={"negative": 35.0, "neutral": 40.0, "positive": 25.0},
         source_breakdown={"app_store": 55.0, "play_store": 45.0},
         segment_signals=[
-            SegmentSignal("iOS pain > Android on rq1.search.browse_friction", "rq1.search.browse_friction")
+            SegmentSignal(
+                "iOS pain > Android on rq1.search.browse_friction",
+                "rq1.search.browse_friction",
+            )
         ],
         cross_source_themes=["rq1.search.browse_friction"],
         exemplar_citations=[],
@@ -70,5 +73,7 @@ def test_weighted_problem_analysis_orders_by_weight() -> None:
 
 def test_weights_reflect_negative_share() -> None:
     analysis = build_weighted_problem_analysis(_section(), _reviews())
-    browse = next(c for c in analysis["root_causes"] if c["theme_id"] == "rq1.search.browse_friction")
+    browse = next(
+        c for c in analysis["root_causes"] if c["theme_id"] == "rq1.search.browse_friction"
+    )
     assert browse["negative_share"] > 50

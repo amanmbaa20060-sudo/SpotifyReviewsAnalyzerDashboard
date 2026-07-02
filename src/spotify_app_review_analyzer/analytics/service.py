@@ -6,7 +6,10 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 
 from spotify_app_review_analyzer.analytics.briefing import build_rq_briefing
-from spotify_app_review_analyzer.analytics.export import export_briefing_json, export_briefing_markdown
+from spotify_app_review_analyzer.analytics.export import (
+    export_briefing_json,
+    export_briefing_markdown,
+)
 from spotify_app_review_analyzer.analytics.schemas import RQ_IDS, RQBriefing
 from spotify_app_review_analyzer.core.settings import settings
 

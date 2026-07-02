@@ -23,7 +23,6 @@ from spotify_app_review_analyzer.analytics.aggregations import (
 )
 from spotify_app_review_analyzer.analytics.briefing import build_rq_briefing
 from spotify_app_review_analyzer.analytics.schemas import RQBriefing
-from spotify_app_review_analyzer.core.settings import settings
 from spotify_app_review_analyzer.db.models import Review
 from spotify_app_review_analyzer.processing.embeddings import EmbeddingStore
 from spotify_app_review_analyzer.processing.service import ProcessingService

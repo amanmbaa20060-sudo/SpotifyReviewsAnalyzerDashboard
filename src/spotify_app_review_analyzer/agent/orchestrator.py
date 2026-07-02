@@ -14,7 +14,6 @@ from spotify_app_review_analyzer.agent.guardrails import (
     validate_grounding,
 )
 from spotify_app_review_analyzer.agent.prompts import (
-    PROMPT_VERSION,
     build_synthesis_user_prompt,
     load_prompt,
 )

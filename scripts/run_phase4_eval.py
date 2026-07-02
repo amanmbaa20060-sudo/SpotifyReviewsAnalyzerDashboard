@@ -4,10 +4,8 @@ from __future__ import annotations
 
 import json
 import re
-import statistics
 import sys
 import time
-import uuid
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -16,8 +14,6 @@ from typing import Any
 from sqlalchemy import func, select
 
 from spotify_app_review_analyzer.agent.groq_client import GroqClient
-from spotify_app_review_analyzer.agent.guardrails import extract_citations
-from spotify_app_review_analyzer.agent.orchestrator import AgentOrchestrator
 from spotify_app_review_analyzer.agent.schemas import GOLDEN_QUESTIONS
 from spotify_app_review_analyzer.agent.service import AgentService
 from spotify_app_review_analyzer.agent.tools import AgentTools
@@ -27,7 +23,6 @@ from spotify_app_review_analyzer.analytics.aggregations import (
     filter_reviews_by_days,
     filter_reviews_for_rq,
 )
-from spotify_app_review_analyzer.analytics.briefing import build_rq_briefing
 from spotify_app_review_analyzer.analytics.schemas import RQ_IDS
 from spotify_app_review_analyzer.analytics.service import RQAnalysisService
 from spotify_app_review_analyzer.core.logging import configure_logging
@@ -586,7 +581,9 @@ def main() -> int:
 
     manual_pending = any(check.manual and not check.passed for check in report.checks)
     all_auto = report.automated_passed == report.automated_total
-    return 0 if all_auto and golden_ok and not manual_pending else (0 if all_auto and golden_ok else 1)
+    if all_auto and golden_ok and not manual_pending:
+        return 0
+    return 0 if all_auto and golden_ok else 1
 
 
 if __name__ == "__main__":

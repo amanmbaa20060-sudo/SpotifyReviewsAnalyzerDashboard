@@ -1,4 +1,3 @@
-import os
 
 from scripts.vercel_build import backend_url_configured
 

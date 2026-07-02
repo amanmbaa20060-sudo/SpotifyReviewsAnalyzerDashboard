@@ -56,7 +56,12 @@ def run_ingest(
     export_json: bool = True,
 ) -> int:
     configure_logging(settings.log_level)
-    keys = list(PROVIDERS.keys()) if source == "all" else list(SOCIAL_PROVIDERS) if source == "social" else [source]
+    if source == "all":
+        keys = list(PROVIDERS.keys())
+    elif source == "social":
+        keys = list(SOCIAL_PROVIDERS)
+    else:
+        keys = [source]
     session = get_session()
     exit_code = 0
 

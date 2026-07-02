@@ -65,7 +65,9 @@ class RedditProvider(IngestionProvider):
                 try:
                     payload = self.http_client.get_json(base_url, params=params)
                 except Exception as exc:
-                    logger.warning("Reddit fetch failed for r/%s via %s: %s", subreddit, base_url, exc)
+                    logger.warning(
+                        "Reddit fetch failed for r/%s via %s: %s", subreddit, base_url, exc
+                    )
                     results = []
                     break
 

@@ -1,23 +1,22 @@
 from __future__ import annotations
 
 import uuid
-from collections import Counter, defaultdict
-from datetime import UTC, date, datetime, timedelta
+from collections import Counter
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, joinedload
 
-from spotify_app_review_analyzer.analytics.briefing import build_rq_briefing
-from spotify_app_review_analyzer.analytics.evidence import select_negative_problem_evidence
 from spotify_app_review_analyzer.analytics.aggregations import (
     count_themes,
     fetch_analyzed_reviews,
     filter_reviews_for_rq,
     theme_label_map,
 )
+from spotify_app_review_analyzer.analytics.briefing import build_rq_briefing
+from spotify_app_review_analyzer.analytics.evidence import select_negative_problem_evidence
 from spotify_app_review_analyzer.analytics.problem_analysis import build_weighted_problem_analysis
-from spotify_app_review_analyzer.analytics.schemas import RQ_IDS
 from spotify_app_review_analyzer.core.settings import settings
 from spotify_app_review_analyzer.db.models import AnalysisResult, Review, Source
 from spotify_app_review_analyzer.processing.classifier.rule_based import RuleBasedClassifier
@@ -334,7 +333,6 @@ def get_research_questions(session: Session) -> list[dict]:
     briefing = build_rq_briefing(session)
     analyzed_reviews = fetch_analyzed_reviews(session)
     store = _embedding_store()
-    taxonomy = load_taxonomy()
     solutions = _rq_solutions()
     output: list[dict] = []
     for section in briefing.sections:

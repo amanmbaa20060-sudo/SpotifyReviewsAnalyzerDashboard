@@ -62,7 +62,9 @@ def is_spotify_relevant(text: str, *, from_hashtag: str | None = None) -> bool:
     return any(term in lowered for term in music_terms) and "spotify" in lowered
 
 
-def engagement_score(*, likes: int = 0, reposts: int = 0, replies: int = 0, views: int = 0) -> float:
+def engagement_score(
+    *, likes: int = 0, reposts: int = 0, replies: int = 0, views: int = 0
+) -> float:
     return float(likes + reposts * 2 + replies + views * 0.01)
 
 

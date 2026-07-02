@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from spotify_app_review_analyzer.agent.groq_client import GroqClientProtocol
 from spotify_app_review_analyzer.agent.orchestrator import AgentOrchestrator
-from spotify_app_review_analyzer.agent.schemas import AgentAnswer, ToolCallRecord
+from spotify_app_review_analyzer.agent.schemas import AgentAnswer
 from spotify_app_review_analyzer.core.settings import settings
 from spotify_app_review_analyzer.db.models import AgentQuery, AgentResponse
 

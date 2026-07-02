@@ -35,7 +35,10 @@ def _section_markdown(section: RQSection) -> str:
         "",
         f"- **Reviews:** {section.review_count}",
         f"- **Readiness:** {section.readiness}",
-        f"- **Avg confidence:** {section.avg_confidence if section.avg_confidence is not None else 'n/a'}",
+        (
+            "- **Avg confidence:** "
+            f"{section.avg_confidence if section.avg_confidence is not None else 'n/a'}"
+        ),
         f"- **Sentiment mix:** {_format_pct(section.sentiment_mix)}",
         f"- **Source breakdown:** {_format_breakdown(section.source_breakdown)}",
         "",

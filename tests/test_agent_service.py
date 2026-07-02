@@ -15,7 +15,9 @@ from spotify_app_review_analyzer.agent.tools import AgentTools
 from spotify_app_review_analyzer.db.models import AgentQuery, AnalysisResult, Review, Source
 
 
-def _seed_processed_review(session, *, source_key: str, text: str, themes: list[str], rqs: list[str]):
+def _seed_processed_review(
+    session, *, source_key: str, text: str, themes: list[str], rqs: list[str]
+):
     source = Source(
         id=uuid.uuid4(),
         key=source_key,
@@ -162,5 +164,6 @@ def test_agent_service_persists_audit_log(db_session, seeded_agent_data) -> None
 def test_orchestrator_refuses_out_of_scope(db_session, seeded_agent_data) -> None:
     orchestrator = AgentOrchestrator(db_session, groq_client=MockGroqClient())
     answer = orchestrator.ask("What is Spotify's revenue?", use_groq=True)
-    assert "out of scope" in answer.answer_text.lower() or "only answer" in answer.answer_text.lower()
+    lower = answer.answer_text.lower()
+    assert "out of scope" in lower or "only answer" in lower
     assert answer.used_groq is False

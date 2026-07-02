@@ -19,9 +19,10 @@ from spotify_app_review_analyzer.db.init_db import init_database
 from spotify_app_review_analyzer.db.models import AnalysisResult, Review, ReviewEmbedding, Source
 from spotify_app_review_analyzer.db.session import get_session
 from spotify_app_review_analyzer.ingestion.social_filter import is_spotify_relevant
-from spotify_app_review_analyzer.trends.detection import SOCIAL_SOURCE_KEYS, detect_bursts
 from spotify_app_review_analyzer.trends.detection import (
+    SOCIAL_SOURCE_KEYS,
     compute_daily_theme_volumes,
+    detect_bursts,
     fetch_social_reviews,
 )
 
@@ -89,7 +90,9 @@ def eval_phase3(session) -> list[Check]:
     checks: list[Check] = []
 
     status_rows = dict(
-        session.execute(select(Review.processing_status, func.count()).group_by(Review.processing_status)).all()
+        session.execute(
+            select(Review.processing_status, func.count()).group_by(Review.processing_status)
+        ).all()
     )
     pending = status_rows.get("pending", 0)
     processed = status_rows.get("processed", 0)
@@ -122,7 +125,9 @@ def eval_phase3(session) -> list[Check]:
     )
 
     with_themes = session.scalar(
-        select(func.count()).select_from(AnalysisResult).where(func.json_array_length(AnalysisResult.themes) > 0)
+        select(func.count())
+        .select_from(AnalysisResult)
+        .where(func.json_array_length(AnalysisResult.themes) > 0)
     )
     # SQLite may not support json_array_length — fallback in Python
     if with_themes is None:
@@ -249,7 +254,13 @@ def eval_phase4(session) -> list[Check]:
                 f"exemplars={len(section.get('exemplar_citations', []))}"
             )
         checks.append(
-            Check("4A", "EC-4A.2", "All 6 RQs have themes, sentiment, >=3 exemplars", sections_ok, "; ".join(notes))
+            Check(
+                "4A",
+                "EC-4A.2",
+                "All 6 RQs have themes, sentiment, >=3 exemplars",
+                sections_ok,
+                "; ".join(notes),
+            )
         )
         verification = briefing.get("verification", {})
         checks.append(
@@ -287,12 +298,26 @@ def eval_phase4(session) -> list[Check]:
         / "system.md"
     )
     checks.append(
-        Check("4B", "EC-4.6", "Versioned Groq prompt templates exist", prompt_path.exists(), str(prompt_path))
+        Check(
+            "4B",
+            "EC-4.6",
+            "Versioned Groq prompt templates exist",
+            prompt_path.exists(),
+            str(prompt_path),
+        )
     )
 
-    cli_exists = (Path(__file__).resolve().parent.parent / "src" / "agent" / "__main__.py").exists()
+    cli_exists = (
+        Path(__file__).resolve().parent.parent / "src" / "agent" / "__main__.py"
+    ).exists()
     checks.append(
-        Check("4B", "EC-4.4", "Agent CLI available (python -m agent)", cli_exists, "ask|chat|golden|summarize")
+        Check(
+            "4B",
+            "EC-4.4",
+            "Agent CLI available (python -m agent)",
+            cli_exists,
+            "ask|chat|golden|summarize",
+        )
     )
 
     if settings.groq_api_key:
@@ -400,7 +425,9 @@ def eval_phase5(session) -> list[Check]:
     if mastodon_sample:
         rng = random.Random(42)
         sample = mastodon_sample if len(mastodon_sample) <= 50 else rng.sample(mastodon_sample, 50)
-        off_topic = sum(1 for r in sample if not is_spotify_relevant(r.text, from_hashtag="spotify"))
+        off_topic = sum(
+            1 for r in sample if not is_spotify_relevant(r.text, from_hashtag="spotify")
+        )
         off_rate = off_topic / len(sample) * 100
         checks.append(
             Check(
@@ -447,7 +474,10 @@ def eval_phase5(session) -> list[Check]:
     # SQLite JSON contains may not work — Python fallback
     if viral_tagged is None or viral_tagged == 0:
         mastodon_all = session.scalars(
-            select(Review).join(Source, Review.source_id == Source.id).where(Source.key == "mastodon").limit(100)
+            select(Review)
+            .join(Source, Review.source_id == Source.id)
+            .where(Source.key == "mastodon")
+            .limit(100)
         ).all()
         viral_tagged = sum(1 for r in mastodon_all if (r.extra_metadata or {}).get("traffic_state"))
 
@@ -472,13 +502,16 @@ def eval_phase5(session) -> list[Check]:
     if trends_json.exists():
         report = json.loads(trends_json.read_text(encoding="utf-8"))
         rising_ok = len(report.get("rising_themes", [])) > 0
+    rising_count = 0
+    if trends_json.exists():
+        rising_count = len(json.loads(trends_json.read_text()).get("rising_themes", []))
     checks.append(
         Check(
             "5",
             "5.12",
             "Trend report lists rising themes",
             result.returncode == 0 and rising_ok,
-            f"rising={len(json.loads(trends_json.read_text()).get('rising_themes', [])) if trends_json.exists() else 0}",
+            f"rising={rising_count}",
         )
     )
 
@@ -503,14 +536,24 @@ def eval_phase5(session) -> list[Check]:
             "EC-5.2",
             ">=600 total social records ingested",
             total_social >= 600,
-            f"total_social={total_social} (mastodon={mastodon_count}, reddit={reddit_count}, bluesky={bluesky_count})",
+            (
+                f"total_social={total_social} (mastodon={mastodon_count}, "
+                f"reddit={reddit_count}, bluesky={bluesky_count})"
+            ),
         )
     )
 
     dec_path = Path(__file__).resolve().parent.parent / "docs" / "decision.md"
-    dec_ok = dec_path.exists() and "DEC-006" in dec_path.read_text(encoding="utf-8") and "Accepted" in dec_path.read_text(encoding="utf-8")
+    dec_text = dec_path.read_text(encoding="utf-8") if dec_path.exists() else ""
+    dec_ok = dec_path.exists() and "DEC-006" in dec_text and "Accepted" in dec_text
     checks.append(
-        Check("5", "EC-5.6", "DEC-006 finalized in decision.md", dec_ok, "Mastodon + Bluesky priority"),
+        Check(
+            "5",
+            "EC-5.6",
+            "DEC-006 finalized in decision.md",
+            dec_ok,
+            "Mastodon + Bluesky priority",
+        ),
     )
 
     return checks

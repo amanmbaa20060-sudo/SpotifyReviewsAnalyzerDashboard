@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import uuid
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from spotify_app_review_analyzer.db.models import AnalysisResult, Review, Source
 from spotify_app_review_analyzer.trends.detection import (
-    DailyThemeCount,
     compute_daily_theme_volumes,
     detect_bursts,
     top_rising_themes,
@@ -64,7 +63,13 @@ def test_detect_bursts_flags_spike(db_session) -> None:
     reviews = []
     for offset in range(6, 1, -1):
         reviews.append(
-            _add_review(db_session, source_key="mastodon", theme=theme, day_offset=offset, engagement=1)
+            _add_review(
+                db_session,
+                source_key="mastodon",
+                theme=theme,
+                day_offset=offset,
+                engagement=1,
+            )
         )
     for _ in range(6):
         reviews.append(
